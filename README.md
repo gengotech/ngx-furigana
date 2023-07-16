@@ -27,7 +27,7 @@ import { NgxFuriganaModule } from '@gengotech/ngx-furigana';
 <furigana [word]="対抗する'" [reading]="'たいこうする'"></furigana>
 ```
 
-![example](example-1.png)
+![example](https://raw.githubusercontent.com/gengotech/ngx-furigana/master/example-1.png)
 
 As you can see, the "する" part is automatically ignored even if it is present in the reading.
 
@@ -39,7 +39,7 @@ It can also handle words where there's kana on both ends:
 <furigana [word]="ぶん回す'" [reading]="'ぶんまわす'"></furigana>
 ```
 
-![example](example-2.png)
+![example](https://raw.githubusercontent.com/gengotech/ngx-furigana/master/example-2.png)
 
 # API
 

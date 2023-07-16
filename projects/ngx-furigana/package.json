@@ -1,6 +1,6 @@
 {
   "name": "@gengotech/ngx-furigana",
-  "version": "0.0.2",
+  "version": "0.0.6",
   "peerDependencies": {
     "@angular/common": "^16.0.0",
     "@angular/core": "^16.0.0"
