@@ -102,8 +102,6 @@ export class FuriganaComponent implements OnInit, OnChanges {
 
       let currentWord = '';
 
-      console.info(wordSplit);
-
       for(let i = 0; i < wordSplit.length; i++) {
         if(wordSplit[i] === readingSplit[i]) {
           currentWord += wordSplit[i];
