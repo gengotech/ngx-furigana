@@ -1,5 +1,10 @@
 import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
 
+export interface ReadingPair {
+  word: string;
+  reading: string | null;
+}
+
 @Component({
   selector: 'furigana',
   templateUrl: './furigana.component.html',
@@ -12,11 +17,11 @@ export class FuriganaComponent implements OnInit, OnChanges {
   @Input() showFurigana: boolean = true;
   @Input() splitCharacters: boolean = false;
 
-  readingPairs: Array<{ word: string, reading: string | null }> = [];
+  readingPairs: ReadingPair[] = [];
 
   ngOnInit(): void {
     if(this.reading) {
-      this.applyFurigana(this.reading, this.word);
+      this.readingPairs = this.applyFurigana(this.reading, this.word);
     }
   }
 
@@ -56,7 +61,7 @@ export class FuriganaComponent implements OnInit, OnChanges {
     // Use lookaheads and lookbehinds to keep delimiters
     let regex = new RegExp(`(?<=${escapedDelimiters.join("|")})|(?=${escapedDelimiters.join("|")})`, "g");
 
-    return word.split(regex);
+    return word.split(regex).filter(x => x !== '');
   }
 
   private hasHiraganaBetweenKanji(s: string): boolean {
@@ -87,19 +92,32 @@ export class FuriganaComponent implements OnInit, OnChanges {
     return false;
   }
 
-  private applyFurigana(reading: string, word: string): void {
-    this.readingPairs = [];
+  applyFurigana(reading: string, word: string): ReadingPair[] {
+    let readingPairs: ReadingPair[] = [];
 
     if(this.hasHiraganaBetweenKanji(word)) {
       let word = this.getKanaSubstrings(this.word);
       let wordSplit = this.splitByKanaSubstrings(this.word, word)
       let readingSplit = this.splitByKanaSubstrings(this.reading!, word)
 
+      let currentWord = '';
+
+      console.info(wordSplit);
+
       for(let i = 0; i < wordSplit.length; i++) {
-        this.readingPairs.push({ word: wordSplit[i], reading: readingSplit[i] });
+        if(wordSplit[i] === readingSplit[i]) {
+          currentWord += wordSplit[i];
+          continue;
+        } else {
+          if(currentWord !== '') {
+            readingPairs.push({ word: currentWord, reading: null });
+            currentWord = '';
+          }
+        }
+        readingPairs.push({ word: wordSplit[i], reading: readingSplit[i] });
       }
 
-      return;
+      return readingPairs;
     }
 
     // Convert word and reading to sets of unique characters
@@ -110,8 +128,8 @@ export class FuriganaComponent implements OnInit, OnChanges {
     const intersection = new Set([...wordSet].filter(x => readingSet.has(x)));
 
     if (reading.length === 0 || reading === word || intersection.size === 0) {
-      this.readingPairs.push({ word: this.word, reading: this.reading! });
-      return;
+      readingPairs.push({ word: this.word, reading: this.reading! });
+      return readingPairs;
     }
 
     let i = 1;
@@ -132,9 +150,16 @@ export class FuriganaComponent implements OnInit, OnChanges {
       i++;
     }
 
-    this.readingPairs.push({ word: matchingPartFront, reading: null });
-    this.readingPairs.push({ word: word.slice(matchingPartFront.length, word.length - matchingPartBack.length), reading: reading.slice(matchingPartFront.length, reading.length - matchingPartBack.length) });
-    this.readingPairs.push({ word: matchingPartBack, reading: null });
+    if(matchingPartFront) {
+      readingPairs.push({ word: matchingPartFront, reading: null });
+    }
+    readingPairs.push({ word: word.slice(matchingPartFront.length, word.length - matchingPartBack.length), reading: reading.slice(matchingPartFront.length, reading.length - matchingPartBack.length) });
+
+    if(matchingPartBack) {
+      readingPairs.push({ word: matchingPartBack, reading: null });
+    }
+
+    return readingPairs;
   }
 
 
