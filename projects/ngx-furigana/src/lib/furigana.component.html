@@ -1,0 +1,11 @@
+<ng-container *ngIf="this.reading && this.showFurigana; else plainWord">
+  <ng-container *ngIf="splitCharacters; else noSplit">
+    <ng-container *ngIf="matchingPartFront.length > 0 || matchingPartBack.length > 0"><character [word]="matchingPartFront"></character><ruby><character [word]="wordWithoutMatchingPart"></character><rt>{{readingWithoutMatchingPart}}</rt></ruby><character [word]="matchingPartBack"></character></ng-container>
+    <ng-container *ngIf="matchingPartFront.length === 0 && matchingPartBack.length === 0"><ruby><character [word]="word"></character><rt>{{reading}}</rt></ruby></ng-container>
+  </ng-container>
+  <ng-template #noSplit>
+    <ng-container *ngIf="matchingPartFront.length > 0 || matchingPartBack.length > 0">{{matchingPartFront}}<ruby>{{wordWithoutMatchingPart}}<rt>{{readingWithoutMatchingPart}}</rt></ruby>{{matchingPartBack}}</ng-container>
+    <ng-container *ngIf="matchingPartFront.length === 0 && matchingPartBack.length === 0"><ruby>{{word}}<rt>{{reading}}</rt></ruby></ng-container>
+  </ng-template>
+</ng-container>
+<ng-template #plainWord>{{ this.word }}</ng-template>
