@@ -1,10 +1,8 @@
 # Furigana for Angular
 
-![example](https://raw.githubusercontent.com/gengotech/ngx-furigana/master/example-0.png)
-
 An Angular component that intelligently displays Furigana.
 
-It was built in order to display Japanese text and readings programatically from sources such as JMdict.
+![example](https://raw.githubusercontent.com/gengotech/ngx-furigana/master/example-0.png)
 
 
 ```html
@@ -26,6 +24,8 @@ It was built in order to display Japanese text and readings programatically from
 <!-- Full kana  -->
 <furigana word="日" reading="にち"></furigana>
 ```
+
+It was built in order to display Japanese text and readings programatically from sources such as JMdict.
 
 # Installation
 
