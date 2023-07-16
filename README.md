@@ -25,7 +25,6 @@ It was built in order to display Japanese text and readings programatically from
 
 <!-- Full kana  -->
 <furigana word="日" reading="にち"></furigana>
-
 ```
 
 # Installation

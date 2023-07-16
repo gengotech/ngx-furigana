@@ -1,7 +1,7 @@
 <ng-container *ngIf="this.reading && this.showFurigana; else plainWord">
   <ng-container *ngFor="let pair of readingPairs">
     <ng-container *ngIf="pair.reading; else noReading"><ruby><character [word]="pair.word"></character><rt>{{pair.reading}}</rt></ruby></ng-container>
-    <ng-template #noReading>{{pair.word}}</ng-template>
+    <ng-template #noReading><character [word]="pair.word"></character></ng-template>
   </ng-container>
 </ng-container>
 <ng-template #plainWord>{{ this.word }}</ng-template>
