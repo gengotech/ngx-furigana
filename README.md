@@ -2,8 +2,31 @@
 
 ![example](https://raw.githubusercontent.com/gengotech/ngx-furigana/master/example-0.png)
 
-A simple Angular component to display furigana. Mostly useful if you're displaying Japanese text
-programatically and do not have the specific word splits and respective furigana but entire words.
+An Angular component that intelligently displays Furigana.
+
+It was built in order to display Japanese text and readings programatically from sources such as JMdict.
+
+
+```typescript
+<!-- Kana between Kanji -->
+<furigana word="日の人" reading="ひのひと"></furigana>
+
+<!-- Kana between Kanji -->
+<furigana word="あの日の人" reading="あのひのひと"></furigana>
+
+<!-- Trailing kana -->
+<furigana word="対抗する" reading="たいこうする"></furigana>
+
+<!-- Kanji between kana  -->
+<furigana word="ぶん回す" reading="ぶんまわす"></furigana>
+
+<!-- Full kana  -->
+<furigana word="稲葉曇" reading="いなばくもり"></furigana>
+
+<!-- Full kana  -->
+<furigana word="日" reading="にち"></furigana>
+
+```
 
 # Installation
 
