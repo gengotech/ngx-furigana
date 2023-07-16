@@ -1,5 +1,7 @@
 # Furigana for Angular
 
+![example](https://raw.githubusercontent.com/gengotech/ngx-furigana/master/example-0.png)
+
 A simple Angular component to display furigana. Mostly useful if you're displaying Japanese text
 programatically and do not have the specific word splits and respective furigana but entire words.
 
@@ -36,7 +38,7 @@ As you can see, the "する" part is automatically ignored even if it is present
 It can also handle words where there's kana on both ends:
 
 ```html
-<furigana [word]="ぶん回す'" [reading]="'ぶんまわす'"></furigana>
+<furigana [word]="'ぶん回す'" [reading]="'ぶんまわす'"></furigana>
 ```
 
 ![example](https://raw.githubusercontent.com/gengotech/ngx-furigana/master/example-2.png)

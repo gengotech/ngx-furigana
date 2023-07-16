@@ -1,6 +1,24 @@
 {
   "name": "@gengotech/ngx-furigana",
-  "version": "0.0.6",
+  "description": "A simple Angular component to display furigana. Mostly useful if you're displaying Japanese text programatically and do not have the specific word splits and respective furigana but entire words.",
+  "keywords": [
+    "angular",
+    "furigana",
+    "ruby",
+    "japanese"
+  ],
+  "author": {
+    "email": "gengotech@protonmail.com",
+    "name": "gengo.tech",
+    "url": "https://gengo.tech"
+  },
+  "license": "GPL-3.0-or-later",
+  "homepage": "https://github.com/gengotech/ngx-furigana.git",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gengotech/ngx-furigana.git"
+  },
+  "version": "0.0.7",
   "peerDependencies": {
     "@angular/common": "^16.0.0",
     "@angular/core": "^16.0.0"

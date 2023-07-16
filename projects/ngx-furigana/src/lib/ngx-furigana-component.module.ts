@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import {FuriganaComponent} from "./furigana.component";
 import {CharacterComponent} from "./character.component";
-import {NgForOf, NgIf} from "@angular/common";
+import {JsonPipe, NgForOf, NgIf} from "@angular/common";
 
 @NgModule({
   declarations: [
@@ -10,7 +10,8 @@ import {NgForOf, NgIf} from "@angular/common";
   ],
   imports: [
     NgIf,
-    NgForOf
+    NgForOf,
+    JsonPipe
   ],
   exports: [
     FuriganaComponent
