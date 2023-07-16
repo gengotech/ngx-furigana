@@ -7,7 +7,7 @@ An Angular component that intelligently displays Furigana.
 It was built in order to display Japanese text and readings programatically from sources such as JMdict.
 
 
-```typescript
+```html
 <!-- Kana between Kanji -->
 <furigana word="日の人" reading="ひのひと"></furigana>
 
