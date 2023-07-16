@@ -15,12 +15,11 @@ export class FuriganaComponent implements OnInit, OnChanges {
   @Input() word!: string;
   @Input() reading!: string | undefined;
   @Input() showFurigana: boolean = true;
-  @Input() splitCharacters: boolean = false;
 
   readingPairs: ReadingPair[] = [];
 
   ngOnInit(): void {
-    if(this.reading) {
+    if (this.reading) {
       this.readingPairs = this.applyFurigana(this.reading, this.word);
     }
   }
@@ -30,59 +29,82 @@ export class FuriganaComponent implements OnInit, OnChanges {
     this.ngOnInit();
   }
 
-  isKanji(ch: string): boolean {
-    return (ch >= '\u4e00' && ch <= '\u9faf') || (ch >= '\u3400' && ch <= '\u4dbf');
+  /**
+   * Determines if a given character is a Kanji.
+   *
+   * @param {string} character - The character to check.
+   * @returns {boolean} True if the character is a Kanji; otherwise, false.
+   */
+  private isKanji(character: string): boolean {
+    return (character >= '\u4e00' && character <= '\u9faf') || (character >= '\u3400' && character <= '\u4dbf');
   }
 
-  isHiragana(ch: string): boolean {
-    return ch >= '\u3041' && ch <= '\u3096';
+  /**
+   * Determines if a given character is a Hiragana.
+   *
+   * @param {string} character - The character to check.
+   * @returns {boolean} True if the character is a Hiragana; otherwise, false.
+   */
+  private isHiragana(character: string): boolean {
+    return character >= '\u3041' && character <= '\u3096';
   }
 
-  getKanaSubstrings(s: string): string[] {
+  /**
+   * Extracts Kana substrings from a given string.
+   *
+   * @param {string} text - The string to process.
+   * @returns {string[]} An array of Kana substrings.
+   */
+  private getKanaSubstrings(text: string): string[] {
     let result = '';
-    for (const ch of s) {
-      if (this.isKanji(ch)) {
-        result += ' ';
-      } else {
-        result += ch;
-      }
+    for (const character of text) {
+      result += this.isKanji(character) ? ' ' : character;
     }
     // Split by space and remove empty strings
-    return result.trim().split(' ').filter(x => x !== '');
+    return result.trim().split(' ').filter(substring => substring !== '');
   }
 
-  splitByKanaSubstrings(word: string, delimiters: string[]): string[] {
+  /**
+   * Splits the given word by Kana substrings using the provided delimiters.
+   *
+   * @param {string} word - The word to split.
+   * @param {string[]} delimiters - The delimiters to use for splitting.
+   * @returns {string[]} An array of the word's parts.
+   */
+  private splitByKanaSubstrings(word: string, delimiters: string[]): string[] {
     // Sort delimiters by length, descending, to avoid partial matches
     delimiters.sort((a, b) => b.length - a.length);
 
     // Escape any characters that have special meaning in a regex
-    let escapedDelimiters = delimiters.map(d => d.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&'));
+    const escapedDelimiters = delimiters.map(delimiter => delimiter.replace(/[-\\^$*+?.()|[\]{}]/g, '\\$&'));
 
     // Use lookaheads and lookbehinds to keep delimiters
-    let regex = new RegExp(`(?<=${escapedDelimiters.join("|")})|(?=${escapedDelimiters.join("|")})`, "g");
+    const delimiterPattern = escapedDelimiters.join("|");
+    const regex = new RegExp(`(?<=${delimiterPattern})|(?=${delimiterPattern})`, "g");
 
-    return word.split(regex).filter(x => x !== '');
+    return word.split(regex).filter(part => part !== '');
   }
 
-  private hasHiraganaBetweenKanji(s: string): boolean {
+  /**
+   * Checks if a string contains a Hiragana character between Kanji characters.
+   *
+   * @param {string} text - The text to check.
+   * @returns {boolean} True if there is a Hiragana character between Kanji characters; otherwise, false.
+   */
+  private hasHiraganaBetweenKanji(text: string): boolean {
     let foundKanji = false;
     let foundHiragana = false;
 
-    for (const ch of s) {
-      if (this.isKanji(ch)) {
+    for (const character of text) {
+      if (this.isKanji(character)) {
         if (foundKanji && foundHiragana) {
           return true;
         }
 
         foundKanji = true;
-
-        if (foundHiragana) {
-          foundHiragana = false;
-        }
-      } else if (this.isHiragana(ch)) {
-        if (foundKanji) {
-          foundHiragana = true;
-        }
+        foundHiragana = false;
+      } else if (this.isHiragana(character)) {
+        foundHiragana = foundKanji;
       } else {
         foundKanji = false;
         foundHiragana = false;
@@ -92,73 +114,122 @@ export class FuriganaComponent implements OnInit, OnChanges {
     return false;
   }
 
+  /**
+   * Applies Furigana readings to the given word and returns a list of ReadingPairs.
+   *
+   * @param {string} reading - The reading to apply.
+   * @param {string} word - The word to apply the reading to.
+   * @returns {ReadingPair[]} An array of ReadingPairs.
+   */
   applyFurigana(reading: string, word: string): ReadingPair[] {
-    let readingPairs: ReadingPair[] = [];
+    const readingPairs: ReadingPair[] = [];
 
-    if(this.hasHiraganaBetweenKanji(word)) {
-      let word = this.getKanaSubstrings(this.word);
-      let wordSplit = this.splitByKanaSubstrings(this.word, word)
-      let readingSplit = this.splitByKanaSubstrings(this.reading!, word)
+    if (this.hasHiraganaBetweenKanji(word)) {
+      const kanaSubstrings = this.getKanaSubstrings(word);
+      const wordSplit = this.splitByKanaSubstrings(word, kanaSubstrings)
+      const readingSplit = this.splitByKanaSubstrings(reading, kanaSubstrings)
 
-      let currentWord = '';
+      return this.mergeWordReadingPairs(wordSplit, readingSplit);
+    }
 
-      for(let i = 0; i < wordSplit.length; i++) {
-        if(wordSplit[i] === readingSplit[i]) {
-          currentWord += wordSplit[i];
-          continue;
-        } else {
-          if(currentWord !== '') {
-            readingPairs.push({ word: currentWord, reading: null });
-            currentWord = '';
-          }
-        }
-        readingPairs.push({ word: wordSplit[i], reading: readingSplit[i] });
+    const commonCharacters = this.getCommonCharacters(word, reading);
+    if (reading.length === 0 || reading === word || commonCharacters.size === 0) {
+      readingPairs.push({word: word, reading: reading});
+      return readingPairs;
+    }
+
+    const [matchingPartFront, matchingPartBack] = this.getMatchingParts(word, reading);
+    return this.buildReadingPairs(matchingPartFront, matchingPartBack, word, reading);
+  }
+
+  /**
+   * Merges word and reading pairs.
+   *
+   * @param {string[]} wordSplit - The split words.
+   * @param {string[]} readingSplit - The split readings.
+   * @returns {ReadingPair[]} An array of merged ReadingPairs.
+   */
+  private mergeWordReadingPairs(wordSplit: string[], readingSplit: string[]): ReadingPair[] {
+    return wordSplit.map((word, index) => {
+      const reading = word === readingSplit[index] ? null : readingSplit[index];
+      return {word: word, reading: reading};
+    }).reduce((pairs: ReadingPair[], currentPair: ReadingPair, index, array) => {
+      if (currentPair.reading === null && index > 0 && array[index - 1].reading === null) {
+        pairs[pairs.length - 1].word += currentPair.word;
+      } else {
+        pairs.push(currentPair);
       }
+      return pairs;
+    }, [] as ReadingPair[]);
+  }
 
-      return readingPairs;
-    }
+  /**
+   * Gets the common characters between two strings.
+   *
+   * @param {string} text1 - The first string.
+   * @param {string} text2 - The second string.
+   * @returns {Set<string>} A Set of common characters.
+   */
+  private getCommonCharacters(text1: string, text2: string): Set<string> {
+    const text1Set = new Set(text1);
+    const text2Set = new Set(text2);
+    return new Set([...text1Set].filter(character => text2Set.has(character)));
+  }
 
-    // Convert word and reading to sets of unique characters
-    const wordSet = new Set(word);
-    const readingSet = new Set(reading);
-
-    // Check if there are any matching characters
-    const intersection = new Set([...wordSet].filter(x => readingSet.has(x)));
-
-    if (reading.length === 0 || reading === word || intersection.size === 0) {
-      readingPairs.push({ word: this.word, reading: this.reading! });
-      return readingPairs;
-    }
-
-    let i = 1;
+  /**
+   * Gets the matching parts at the start and end of two strings.
+   *
+   * @param {string} text1 - The first string.
+   * @param {string} text2 - The second string.
+   * @returns {[string, string]} A pair of matching parts ([matchingPartFront, matchingPartBack]).
+   */
+  private getMatchingParts(text1: string, text2: string): [string, string] {
+    let matchingPartFront = '';
     let matchingPartBack = '';
 
-    // Finding matching part in the back
-    while (i <= word.length && i <= reading.length && word.slice(-i) === reading.slice(-i)) {
-      matchingPartBack = word.slice(-i);
-      i++;
+    for (let i = 1; i <= Math.min(text1.length, text2.length); i++) {
+      if (text1.slice(0, i) === text2.slice(0, i)) {
+        matchingPartFront = text1.slice(0, i);
+      } else {
+        break;
+      }
     }
 
-    i = 1;
-    let matchingPartFront = '';
-
-    // Finding matching part in the front
-    while (i <= word.length && i <= reading.length && word.slice(0, i) === reading.slice(0, i)) {
-      matchingPartFront = word.slice(0, i);
-      i++;
+    for (let i = 1; i <= Math.min(text1.length, text2.length); i++) {
+      if (text1.slice(-i) === text2.slice(-i)) {
+        matchingPartBack = text1.slice(-i);
+      } else {
+        break;
+      }
     }
 
-    if(matchingPartFront) {
-      readingPairs.push({ word: matchingPartFront, reading: null });
-    }
-    readingPairs.push({ word: word.slice(matchingPartFront.length, word.length - matchingPartBack.length), reading: reading.slice(matchingPartFront.length, reading.length - matchingPartBack.length) });
+    return [matchingPartFront, matchingPartBack];
+  }
 
-    if(matchingPartBack) {
-      readingPairs.push({ word: matchingPartBack, reading: null });
+  /**
+   * Builds ReadingPairs from the given word and reading, using the specified matching parts.
+   *
+   * @param {string} matchingPartFront - The matching part at the start.
+   * @param {string} matchingPartBack - The matching part at the end.
+   * @param {string} word - The word.
+   * @param {string} reading - The reading.
+   * @returns {ReadingPair[]} An array of ReadingPairs.
+   */
+  private buildReadingPairs(matchingPartFront: string, matchingPartBack: string, word: string, reading: string): ReadingPair[] {
+    const readingPairs: ReadingPair[] = [];
+
+    if (matchingPartFront) {
+      readingPairs.push({word: matchingPartFront, reading: null});
+    }
+    readingPairs.push({
+      word: word.slice(matchingPartFront.length, word.length - matchingPartBack.length),
+      reading: reading.slice(matchingPartFront.length, reading.length - matchingPartBack.length)
+    });
+    if (matchingPartBack) {
+      readingPairs.push({word: matchingPartBack, reading: null});
     }
 
     return readingPairs;
   }
-
 
 }

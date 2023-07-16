@@ -35,6 +35,97 @@
           }
         }
       }
+    },
+    "ngx-furigana-test": {
+      "projectType": "application",
+      "schematics": {},
+      "root": "projects/ngx-furigana-test",
+      "sourceRoot": "projects/ngx-furigana-test/src",
+      "prefix": "app",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "outputPath": "dist/ngx-furigana-test",
+            "index": "projects/ngx-furigana-test/src/index.html",
+            "main": "projects/ngx-furigana-test/src/main.ts",
+            "polyfills": [
+              "zone.js"
+            ],
+            "tsConfig": "projects/ngx-furigana-test/tsconfig.app.json",
+            "assets": [
+              "projects/ngx-furigana-test/src/favicon.ico",
+              "projects/ngx-furigana-test/src/assets"
+            ],
+            "styles": [
+              "projects/ngx-furigana-test/src/styles.css"
+            ],
+            "scripts": []
+          },
+          "configurations": {
+            "production": {
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "500kb",
+                  "maximumError": "1mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "2kb",
+                  "maximumError": "4kb"
+                }
+              ],
+              "outputHashing": "all"
+            },
+            "development": {
+              "buildOptimizer": false,
+              "optimization": false,
+              "vendorChunk": true,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "namedChunks": true
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "configurations": {
+            "production": {
+              "browserTarget": "ngx-furigana-test:build:production"
+            },
+            "development": {
+              "browserTarget": "ngx-furigana-test:build:development"
+            }
+          },
+          "defaultConfiguration": "development"
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "ngx-furigana-test:build"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "polyfills": [
+              "zone.js",
+              "zone.js/testing"
+            ],
+            "tsConfig": "projects/ngx-furigana-test/tsconfig.spec.json",
+            "assets": [
+              "projects/ngx-furigana-test/src/favicon.ico",
+              "projects/ngx-furigana-test/src/assets"
+            ],
+            "styles": [
+              "projects/ngx-furigana-test/src/styles.css"
+            ],
+            "scripts": []
+          }
+        }
+      }
     }
   }
 }

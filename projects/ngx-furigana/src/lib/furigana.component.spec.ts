@@ -93,4 +93,65 @@ describe('FuriganaComponent', () => {
     expect(result).toEqual(expectedReadingPairs);
   });
 
+  it('kana between two kanji', () => {
+    const word = '考え方';
+    const reading = 'かんがえかた';
+    component.word = word;
+    component.reading = reading;
+
+    const result = component.applyFurigana(reading, word);
+    const expectedReadingPairs: ReadingPair[] = [
+      {word: '考', reading: 'かんが'},
+      {word: 'え', reading: null},
+      {word: '方', reading: 'かた'}
+    ];
+    expect(result).toEqual(expectedReadingPairs);
+  });
+
+  it('trailing kana', () => {
+    const word = '大人しい';
+    const reading = 'おとなしい';
+    component.word = word;
+    component.reading = reading;
+
+    const result = component.applyFurigana(reading, word);
+    const expectedReadingPairs: ReadingPair[] = [
+      {word: '大人', reading: 'おとな'},
+      {word: 'しい', reading: null}
+    ];
+    expect(result).toEqual(expectedReadingPairs);
+  });
+
+  it('handle ー', () => {
+    const word = 'ハート型';
+    const reading = 'ハートがた';
+    component.word = word;
+    component.reading = reading;
+
+    const result = component.applyFurigana(reading, word);
+    const expectedReadingPairs: ReadingPair[] = [
+      {word: 'ハート', reading: null},
+      {word: '型', reading: 'がた'}
+    ];
+    expect(result).toEqual(expectedReadingPairs);
+  });
+
+  it('longer text', () => {
+    const word = '寄り添って笑顔にしたり';
+    const reading = 'よりそってえがおにしたり';
+    component.word = word;
+    component.reading = reading;
+
+    const result = component.applyFurigana(reading, word);
+    const expectedReadingPairs: ReadingPair[] = [
+      {word: '寄', reading: 'よ'},
+      {word: 'り', reading: null},
+      {word: '添', reading: 'そ'},
+      {word: 'って', reading: null},
+      {word: '笑顔', reading: 'えがお'},
+      {word: 'にしたり', reading: null}
+    ];
+    expect(result).toEqual(expectedReadingPairs);
+  });
+
 });
