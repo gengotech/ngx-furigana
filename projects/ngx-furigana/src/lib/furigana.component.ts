@@ -1,6 +1,7 @@
 import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
 import {ReadingPair} from "./reading-pair.interface";
 import {FuriganaService} from "./furigana.service";
+import {TransliterateService} from "./transliterate.service";
 
 @Component({
   selector: 'furigana',
@@ -13,13 +14,16 @@ export class FuriganaComponent implements OnInit, OnChanges {
   @Input() reading!: string | undefined;
   @Input() showFurigana: boolean = true;
 
+  transliteredWord: string | null = null;
+
   readingPairs: ReadingPair[] = [];
 
-  constructor(private furiganaService: FuriganaService) { }
+  constructor(private furiganaService: FuriganaService, private transliterateService: TransliterateService) { }
 
   ngOnInit(): void {
     if (this.reading) {
-      this.readingPairs = this.furiganaService.getReadingPairs(this.reading, this.word);
+      this.transliteredWord = this.transliterateService.convertHiraganaInAtoKatakana(this.reading, this.word);
+      this.readingPairs = this.furiganaService.getReadingPairs(this.transliteredWord, this.word);
     }
   }
 
@@ -27,6 +31,5 @@ export class FuriganaComponent implements OnInit, OnChanges {
     this.readingPairs = [];
     this.ngOnInit();
   }
-
 
 }
