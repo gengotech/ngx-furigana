@@ -24,6 +24,7 @@ export class FuriganaComponent implements OnInit, OnChanges {
     if (this.reading) {
       this.transliteredWord = this.transliterateService.convertHiraganaInAtoKatakana(this.reading, this.word);
       this.readingPairs = this.furiganaService.getReadingPairs(this.transliteredWord, this.word);
+      console.log(this.readingPairs);
     }
   }
 

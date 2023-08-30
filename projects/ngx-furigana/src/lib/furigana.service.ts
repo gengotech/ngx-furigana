@@ -116,7 +116,17 @@ export class FuriganaService {
     }
 
     const [matchingPartFront, matchingPartBack] = this.getMatchingParts(word, reading);
-    return this.buildReadingPairs(matchingPartFront, matchingPartBack, word, reading);
+    const builtReadingPairs = this.buildReadingPairs(matchingPartFront, matchingPartBack, word, reading);
+
+    // We remove the readings on specific characters like "ー"
+    const readingPairsWithoutSpecificReadings = builtReadingPairs.map(pair => {
+      if (pair.word === "ー") {
+        pair.reading = null;
+      }
+      return pair;
+    });
+
+    return readingPairsWithoutSpecificReadings;
   }
 
   /**
