@@ -120,7 +120,7 @@ export class FuriganaService {
 
     // We remove the readings on specific characters like "ー"
     const readingPairsWithoutSpecificReadings = builtReadingPairs.map(pair => {
-      if (pair.word === "ー") {
+      if (pair.word === "ー" || pair.word === "〜" || pair.word === "～") {
         pair.reading = null;
       }
       return pair;
