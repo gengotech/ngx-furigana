@@ -99,6 +99,16 @@ export class FuriganaService {
    * @returns {ReadingPair[]} An array of ReadingPairs.
    */
   getReadingPairs(reading: string, word: string): ReadingPair[] {
+    let pairs = this.calculatePairs(word, reading);
+    pairs.forEach((pair) => {
+      if(pair.word == pair.reading) {
+        pair.reading = null;
+      }
+    })
+    return pairs;
+  }
+
+  private calculatePairs(word: string, reading: string) {
     const readingPairs: ReadingPair[] = [];
 
     if (this.hasHiraganaBetweenKanji(word)) {

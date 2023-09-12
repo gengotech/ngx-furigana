@@ -18,15 +18,15 @@
     "type": "git",
     "url": "https://github.com/gengotech/ngx-furigana.git"
   },
-  "version": "0.0.9",
+  "version": "0.0.17",
   "peerDependencies": {
     "@angular/common": "^16.0.0",
-    "@angular/core": "^16.0.0"
-  },
-  "dependencies": {
-    "tslib": "^2.3.0",
+    "@angular/core": "^16.0.0",
     "@types/wanakana": "^4.0.3",
     "wanakana": "^5.1.0"
+  },
+  "dependencies": {
+    "tslib": "^2.3.0"
   },
   "sideEffects": false
 }
