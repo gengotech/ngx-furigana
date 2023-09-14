@@ -45,6 +45,11 @@ export class FuriganaComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
+    if (changes.hasOwnProperty('reading')) {
+      this.originalReading = changes['reading'].currentValue;
+      this.reading = changes['reading'].currentValue;
+    }
+
     this.readingPairs = [];
     this.ngOnInit();
   }
