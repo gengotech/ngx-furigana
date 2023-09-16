@@ -1,4 +1,4 @@
-<ng-container *ngIf="this.reading && this.showFurigana; else plainWord">
+<ng-container *ngIf="this.reading && this.showFurigana && this.furiganaService.isJapanese(this.word); else plainWord">
   <ng-container *ngFor="let pair of readingPairs">
     <ng-container *ngIf="pair.reading; else noReading"><ruby><character [word]="pair.word"></character><rt>{{pair.reading}}</rt></ruby></ng-container>
     <ng-template #noReading><character [word]="pair.word"></character></ng-template>

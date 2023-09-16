@@ -7,6 +7,43 @@ import {ReadingPair} from "./reading-pair.interface";
 export class FuriganaService {
 
   /**
+   * Determines if a character is a Japanese character.
+   *
+   * @param {string} ch - A single character string.
+   * @returns {boolean} - True if the character is Japanese, false otherwise.
+   */
+  isCharacterJapanese(ch: string): boolean {
+    const code = ch.charCodeAt(0);
+
+    // Hiragana
+    if (code >= 0x3040 && code <= 0x309F) return true;
+
+    // Katakana
+    if (code >= 0x30A0 && code <= 0x30FF) return true;
+
+    // CJK Unified Ideographs - Common and Uncommon Kanji
+    if (code >= 0x4E00 && code <= 0x9FFF) return true;
+
+    // Katakana Phonetic Extensions
+    if (code >= 0x31F0 && code <= 0x31FF) return true;
+
+    return false;
+  }
+
+  /**
+   * Determines if a string contains only Japanese characters.
+   *
+   * @param {string} str - The string to be checked.
+   * @returns {boolean} - True if all characters in the string are Japanese, false otherwise.
+   */
+  isJapanese(str: string): boolean {
+    for (const ch of str) {
+      if (!this.isCharacterJapanese(ch)) return false;
+    }
+    return true;
+  }
+
+  /**
    * Determines if a given character is a Kanji.
    *
    * @param {string} character - The character to check.

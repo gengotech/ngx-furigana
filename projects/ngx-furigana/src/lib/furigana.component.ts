@@ -23,7 +23,7 @@ export class FuriganaComponent implements OnInit, OnChanges {
 
   readingPairs: ReadingPair[] = [];
 
-  constructor(private furiganaService: FuriganaService, private transliterateService: TransliterateService) { }
+  constructor(public furiganaService: FuriganaService, private transliterateService: TransliterateService) { }
 
   ngOnInit(): void {
     if (this.reading) {
